@@ -43,19 +43,29 @@ public class EmployeeController {
 	//get employee by id rest api
 	@GetMapping("/employees/{id}")
 	public ResponseEntity<Employee> getEmployeeById(@PathVariable Long id) {
-		Employee employee = employeeRepository.findById(id).orElseThrow(()-> new ResourceNotFoundException("존재하지 않는 학생아이디입니다."));
+		Employee employee = employeeRepository.findById(id).orElseThrow(()-> new ResourceNotFoundException("존재하지 않는 아이디입니다."));
 		return ResponseEntity.ok(employee);
 	}
 	
 	//update employee rest api
 	@PutMapping("/employees/{id}")
 	public ResponseEntity<Employee> updateEmployee(@PathVariable Long id, @RequestBody Employee employeeDetails){
-		Employee employee = employeeRepository.findById(id).orElseThrow(()-> new ResourceNotFoundException("존재하지 않는 학생아이디입니다."));
+		Employee employee = employeeRepository.findById(id).orElseThrow(()-> new ResourceNotFoundException("존재하지 않는 아이디입니다."));
 		employee.setFirstName(employeeDetails.getFirstName());
 		employee.setLastName(employeeDetails.getLastName());
 		employee.setEmailId(employeeDetails.getEmailId());
 		Employee updateEmployee = employeeRepository.save(employee);
 		return ResponseEntity.ok(updateEmployee);
+	}
+	
+	// delete employee rest api
+	@DeleteMapping("/employees/{id}")
+	public ResponseEntity<Map<String, Boolean>> deleteEmployee(@PathVariable Long id){
+		Employee employee = employeeRepository.findById(id).orElseThrow(()-> new ResourceNotFoundException("존재하지 않는 아이디입니다."));
+		employeeRepository.delete(employee);
+		Map<String, Boolean> res = new HashMap<>();
+		res.put("delete", Boolean.TRUE);
+		return ResponseEntity.ok(res);
 	}
 
 }
